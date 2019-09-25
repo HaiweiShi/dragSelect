@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="./src/css/dragSelect.css">
+    <script src="./src/js/dragSelect.min.js"></script>
+    <style>
+      #dragSelect{
+        width: 800px;
+        height: 500px;
+        overflow: auto;
+        margin: 10px auto;
+        padding: 40px;
+        border: 1px solid #ddd;
+      }
+      .style1{
+        width: 100px;
+        height: 100px;
+        display: inline-block;
+        margin: 10px;
+        background-color: rgba(255,0,0,0.5);
+      }
+    </style>
+    <title>拖拽框选</title>
+  </head>
+  <body id="body">
+    <div class="drag-select" id="dragSelect">
+      <div class='ds-option style1' data-value="v1"></div>
+      <div class='ds-option style1' data-value="v2"></div>
+      <div class='ds-option style1' data-value="v3"></div>
+      <div class="style1" style="background-color: #fff">
+        <img style="width:100%;height:100%" class='ds-option' data-value="v4" src="./src/img/word.png" alt="">
+      </div>
+      <div class='ds-option style1' data-value="v5"></div>
+      <div class='ds-option style1' data-value="v6"></div>
+      <div class='ds-option style1' data-value="v7"></div>
+      <div class="style1" style="background-color: #fff">
+        <!-- <img class='ds-option' data-value="v8" src="./src/img/excel.png" alt=""> -->
+      </div>
+      <div class='ds-option style1' data-value="v9"></div>
+      <div class='ds-option style1' data-value="v10"></div>
+      <div class='ds-option style1' data-value="v11"></div>
+      <div class='ds-option style1' data-value="v12"></div>
+    </div>
+    [<span id="context"></span>]
+  </body>
+  <script>
+    var DS = getDS()
+    let valueList = []
+    var dragSelect = document.getElementById('dragSelect')
+    var context = document.getElementById('context')
+    DS(dragSelect, {
+      value: 'value',
+      callBack(vList, eleList){
+        valueList = vList || []
+        context.innerHTML = valueList.join(',')
+      }
+    })
+  </script>
+</html>
