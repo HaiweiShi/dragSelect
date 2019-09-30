@@ -1,4 +1,6 @@
 # 拖拽框选器
+## DEMO
+http://shihaiwei.top/html/dragSelect/index.html
 ## 使用方法
 #### 引入index.js
 ```
