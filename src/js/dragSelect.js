@@ -75,6 +75,39 @@ function getDS() {
   var eleList = [];
   var vList = [];
   var valueKey = "value";
+  function getOption(ele){
+    if (ele && ele.getElementsByClassName) {
+      return ele.getElementsByClassName('ds-option')
+    }
+    return []
+  }
+  // 清空上个last-focus 添加last-focus 用于shift选择
+  function resetLastFocus(ele, option) {
+    var lastArr = ele.getElementsByClassName('last-focus')
+    for (var i = 0; i < lastArr.length; i++) {
+      lastArr[i].classList.remove("last-focus")
+    }
+    option.classList.add("last-focus")
+  }
+  function addSelect(eleArr, beginEle, endEle){
+    var begin = null
+    var end = null
+    var arr = []
+    for (var i = 0; i < eleArr.length; i++) {
+      const item = eleArr[i];
+      if (beginEle == item) begin = i;
+      if (begin != null) arr.push(item);
+      if (endEle == item) {
+        end = i
+        break
+      }
+    }
+    if (end != null) {
+      for (var i = 0; i < arr.length; i++) {
+        arr[i].classList.add("ds-checked");
+      }
+    }
+  }
   /**
    * 
    * @param {*} e 事件对象
@@ -98,13 +131,18 @@ function getDS() {
     if (eY - sY < 0) {
       shade.style.top = eY + 'px'; shadeY1 = eY; shadeY2 = sY;
     }
-    var arr = ele.getElementsByClassName('ds-option') // 可选项数组
+    var arr = getOption(ele)
+    var lastFocus = null
+    var startFocus = null
     for (var i = 0; i < arr.length; i++) {
       var option = arr[i];
       var x1 = option.offsetLeft;
       var y1 = option.offsetTop;
       var x2 = option.offsetLeft + option.clientWidth;
       var y2 = option.offsetTop + option.clientHeight;
+      if (option.classList.contains('last-focus')) {
+        lastFocus = option
+      }
       if (
         (shadeX1 <= x1 && shadeX2 >= x2 && shadeY1 <= y1 && shadeY2 >= y2) || // 判断 可选项 在 shade 内：图2
         (shadeX1 >= x1 && shadeX2 <= x2 && shadeY1 >= y1 && shadeY2 <= y2) || // 判断 shade 在 可选项 内：图3
@@ -117,9 +155,16 @@ function getDS() {
           ((shadeY1 >= y1 && shadeY1 <= y2) || (shadeY2 >= y1 && shadeY2 <= y2)) // shadeY1 或 shadeY2 在 y1 和 y2 之间
         )
       ) {
-        if (e.ctrlKey && vList.indexOf(option.dataset[valueKey]) > -1) {
+        if (e.shiftKey) {
+          if (lastFocus) {
+            addSelect(arr, lastFocus, option)
+          } else {
+            startFocus = option
+          }
+        } else if (e.ctrlKey && vList.indexOf(option.dataset[valueKey]) > -1) {
           option.classList.remove("ds-checked");
         } else {
+          resetLastFocus(ele, option)
           option.classList.add("ds-checked");
         }
       } else {
@@ -127,6 +172,11 @@ function getDS() {
           option.classList.remove("ds-checked");
         }
       }
+    }
+    if (startFocus && lastFocus) {
+      addSelect(arr, startFocus, lastFocus)
+    } else if(startFocus && lastFocus === null && arr[0]){
+      addSelect(arr, arr[0], startFocus)
     }
   }
   function getValue(ele, data){
