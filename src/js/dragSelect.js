@@ -1,4 +1,19 @@
 
+
+function clearSelections () {
+  if (window.getSelection) {
+      // 获取选中
+      var selection = window.getSelection();
+      // 清除选中
+      selection.removeAllRanges();
+  } else if (document.selection && document.selection.empty) {
+     // 兼容 IE8 以下，但 IE9+ 以上同样可用
+      document.selection.empty();
+      // 或使用 clear() 方法
+      // document.selection.clear();
+  }       
+}
+
 /**
  * 获取距目标元素左侧的距离
  * @param {*} option 元素
@@ -209,6 +224,7 @@ function getDS() {
         if (e.button != 0) {
           return;
         }
+        clearSelections()
         sX = e.pageX - getEleOffsetLeft(ele) + getEleScrollLeft(ele); // ele.offsetLeft
         sY = e.pageY - getEleOffsetTop(ele) + getEleScrollTop(ele); // ele.offsetTop
         if (e.target.draggable) { // 可拖拽
