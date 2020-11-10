@@ -1,4 +1,5 @@
 
+var isReduce = false // 如果有fixed定位的 把window.scroll减去
 
 function clearSelections () {
   if (window.getSelection) {
@@ -130,8 +131,8 @@ function getDS() {
    * @param {*} flag 是否单选
    */
   function setShage(e, ele) {
-    eX = e.pageX - getEleOffsetLeft(ele) + getEleScrollLeft(ele); // - ele.offsetLeft
-    eY = e.pageY - getEleOffsetTop(ele) + getEleScrollTop(ele); // - ele.offsetTop
+    eX = e.pageX - getEleOffsetLeft(ele) + getEleScrollLeft(ele) - (isReduce ? window.scrollX : 0); // - ele.offsetLeft
+    eY = e.pageY - getEleOffsetTop(ele) + getEleScrollTop(ele) - (isReduce ? window.scrollY : 0); // - ele.offsetTop
     shade.style.left = sX + 'px';
     shade.style.top = sY + 'px';
     shade.style.width = Math.abs(eX - sX) + 'px'; // 计算差值取正数
@@ -204,7 +205,14 @@ function getDS() {
       data.callBack(vList, eleList)
     }
   }
-  function DS(ele, data) {
+  /**
+   * 
+   * @param {*} ele 
+   * @param {*} data 
+   * @param {*} s 如果在fixed定位中使用需传1 将减去window.scroll
+   */
+  function DS(ele, data, s) {
+    isReduce = !!s
     if (ele) {
       valueKey = data.value || 'value';
       function clickFun(e, flag) {
@@ -225,8 +233,8 @@ function getDS() {
           return;
         }
         clearSelections()
-        sX = e.pageX - getEleOffsetLeft(ele) + getEleScrollLeft(ele); // ele.offsetLeft
-        sY = e.pageY - getEleOffsetTop(ele) + getEleScrollTop(ele); // ele.offsetTop
+        sX = e.pageX - getEleOffsetLeft(ele) + getEleScrollLeft(ele) - (isReduce ? window.scrollX : 0); // ele.offsetLeft
+        sY = e.pageY - getEleOffsetTop(ele) + getEleScrollTop(ele) - (isReduce ? window.scrollY : 0); // ele.offsetTop
         if (e.target.draggable) { // 可拖拽
           document.onclick = function(e) {
             clickFun(e)
